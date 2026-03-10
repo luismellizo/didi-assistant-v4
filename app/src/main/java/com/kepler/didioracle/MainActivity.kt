@@ -109,7 +109,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val etTarifa = createHackEdit("TARIFA_TARGET", "META_KM", 1350f)
-        val etOrigen = createHackEdit("MAX_ORIGIN_KM", "MAX_ORIGIN", 1.0f)
+        val etOrigen = createHackEdit("MAX_ORIGIN_KM", "MAX_ORIGEN", 1.0f)
+        val etPrecioGalon = createHackEdit("PRECIO_GALON_COP", "PRECIO_GALON", 15600f)
+        val etRendimiento = createHackEdit("RENDIMIENTO_KM_GAL", "RENDIMIENTO_KM", 45f)
 
         val cbxNuevos = CheckBox(this).apply {
             text = "REJECT_NEW_USERS"
@@ -124,7 +126,15 @@ class MainActivity : AppCompatActivity() {
         val btnSave = createHackButton("SAVE_CONFIG", "#003B00") {
             val t = etTarifa.text.toString().toFloatOrNull() ?: 1350f
             val o = etOrigen.text.toString().toFloatOrNull() ?: 1.0f
-            prefs.edit().putFloat("META_KM", t).putFloat("MAX_ORIGIN", o).putBoolean("RECHAZAR_NUEVOS", cbxNuevos.isChecked).apply()
+            val pg = etPrecioGalon.text.toString().toFloatOrNull() ?: 15600f
+            val rend = etRendimiento.text.toString().toFloatOrNull() ?: 45f
+            prefs.edit()
+                .putFloat("META_KM", t)
+                .putFloat("MAX_ORIGEN", o)
+                .putFloat("PRECIO_GALON", pg)
+                .putFloat("RENDIMIENTO_KM", rend)
+                .putBoolean("RECHAZAR_NUEVOS", cbxNuevos.isChecked)
+                .apply()
             Toast.makeText(context, "CONFIG_SAVED", Toast.LENGTH_SHORT).show()
         }
 
@@ -157,10 +167,17 @@ class MainActivity : AppCompatActivity() {
         content.addView(titleText)
         content.addView(subTitle)
         
-        content.addView(createHackTitle("PARAM_GANANCIA_KM"))
+        content.addView(createHackTitle("PARAM_GANANCIA_NETA_KM"))
         content.addView(etTarifa)
         content.addView(createHackTitle("PARAM_DISTANCIA_RECOGIDA"))
         content.addView(etOrigen)
+        
+        content.addView(View(this).apply { layoutParams = LinearLayout.LayoutParams(1, 40) })
+        content.addView(createHackTitle("FUEL_PRECIO_GALON_COP"))
+        content.addView(etPrecioGalon)
+        content.addView(createHackTitle("FUEL_RENDIMIENTO_KM_GALON"))
+        content.addView(etRendimiento)
+        
         content.addView(cbxNuevos)
         content.addView(btnSave)
         

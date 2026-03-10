@@ -245,17 +245,20 @@ class ScreenReaderService : Service() {
 
         if (trip.isRentable) {
             val valorStr = String.format(Locale.US, "%,.0f", trip.valorPorkm)
+            val netaStr = String.format(Locale.US, "%,.0f", trip.gananciaNeta)
             titleView?.text = "¡OK! \$$valorStr/km"
             titleView?.setTextColor(Color.parseColor("#00FF41"))
             val distStr = String.format(Locale.US, "%.1f", trip.origenKm + trip.destinoKm)
-            subView?.text = "DIST: ${distStr}km\n$pagoIcon"
+            val gasStr = String.format(Locale.US, "%,.0f", trip.costoGasolina)
+            subView?.text = "NETA: \$$netaStr | GAS: \$$gasStr\nDIST: ${distStr}km | $pagoIcon"
             subView?.setTextColor(Color.parseColor("#80FF80"))
             bgDrawable?.setStroke(6, Color.parseColor("#00FF41"))
         } else {
             titleView?.text = "[ RECHAZAR ]"
             titleView?.setTextColor(Color.parseColor("#FF0000"))
-            val extraVal = if (trip.valorPorkm > 0) "\$${String.format(Locale.US, "%,.0f", trip.valorPorkm)}/km" else ""
-            subView?.text = "${trip.msgRechazo}\n$extraVal\n$pagoIcon"
+            val extraVal = if (trip.valorPorkm > 0) "\$${String.format(Locale.US, "%,.0f", trip.valorPorkm)}/km neto" else ""
+            val gasStr = if (trip.costoGasolina > 0) "GAS: \$${String.format(Locale.US, "%,.0f", trip.costoGasolina)}" else ""
+            subView?.text = "${trip.msgRechazo}\n$extraVal $gasStr\n$pagoIcon"
             subView?.setTextColor(Color.parseColor("#FF6666"))
             bgDrawable?.setStroke(6, Color.parseColor("#FF0000"))
         }

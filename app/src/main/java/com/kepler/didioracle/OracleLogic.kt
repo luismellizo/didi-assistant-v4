@@ -6,9 +6,9 @@ import java.util.Locale
 
 object OracleLogic {
 
-    // Configuración Base Spark 2012
-    private const val RENDIMIENTO_KM_POR_GALON = 45.0
-    private const val PRECIO_GALON_COP = 15600.0
+    // Valores por defecto (configurables desde la UI)
+    private const val DEFAULT_RENDIMIENTO = 45.0
+    private const val DEFAULT_PRECIO_GALON = 15600.0
 
     data class TripData(
         var precioOriginal: String = "",
@@ -21,9 +21,13 @@ object OracleLogic {
         var arrendamientosParsed: Int = -1,
         var tipoPago: String = "EFECTIVO",
         
+        // Cálculos de rentabilidad
+        var costoGasolina: Double = 0.0,   // Costo del combustible para este viaje
+        var gananciaNeta: Double = 0.0,     // Precio - costo gasolina
+        var valorPorkm: Double = 0.0,       // Ganancia NETA por km
+        
         var isRentable: Boolean = false,
         var msgRechazo: String = "",
-        var valorPorkm: Double = 0.0,
         var debugDistancia: Double = 0.0
     )
 
@@ -34,6 +38,8 @@ object OracleLogic {
         val metaGananciaPerKm = prefs.getFloat("META_KM", 1350f).toDouble()
         val maxDistanciaOrigen = prefs.getFloat("MAX_ORIGEN", 1.0f).toDouble()
         val rechazarNuevos = prefs.getBoolean("RECHAZAR_NUEVOS", true)
+        val precioGalon = prefs.getFloat("PRECIO_GALON", DEFAULT_PRECIO_GALON.toFloat()).toDouble()
+        val rendimientoKmGal = prefs.getFloat("RENDIMIENTO_KM", DEFAULT_RENDIMIENTO.toFloat()).toDouble()
 
         Log.d("DidiOracle", "=== NUEVA EVALUACIÓN ===")
         Log.d("DidiOracle", "Config: Meta=$metaGananciaPerKm, MaxOrigen=$maxDistanciaOrigen, BloquearNuevos=$rechazarNuevos")
@@ -187,7 +193,13 @@ object OracleLogic {
         }
         
         val totalKm = trip.origenKm + trip.destinoKm
-        trip.valorPorkm = trip.precioParsed / totalKm
+        
+        // Cálculo de costo de combustible para este trayecto
+        // Fórmula: (totalKm / rendimientoKmGal) * precioGalon
+        val galonesConsumidos = totalKm / rendimientoKmGal
+        trip.costoGasolina = galonesConsumidos * precioGalon
+        trip.gananciaNeta = trip.precioParsed - trip.costoGasolina
+        trip.valorPorkm = trip.gananciaNeta / totalKm
         
         if (trip.valorPorkm >= metaGananciaPerKm) {
             trip.isRentable = true
@@ -196,7 +208,8 @@ object OracleLogic {
             trip.msgRechazo = "Pago bajo: \$${trip.valorPorkm.toInt()}/km"
         }
         
-        Log.d("DidiOracle", "DECISIÓN: rentable=${trip.isRentable}, valor/km=${trip.valorPorkm}, msg=${trip.msgRechazo}")
+        Log.d("DidiOracle", "ECONOMÍA: Precio=${trip.precioParsed}, Gasolina=${trip.costoGasolina}, Neta=${trip.gananciaNeta}, $/km=${trip.valorPorkm}")
+        Log.d("DidiOracle", "DECISIÓN: rentable=${trip.isRentable}, msg=${trip.msgRechazo}")
         
         return trip
     }
