@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DiDi Oráculo</string>
+    <string name="accessibility_service_description">Servicio de accesibilidad para analizar los viajes entrantes de DiDi en tiempo real y mostrar la rentabilidad por kilómetro basada en un Spark Life 2012.</string>
+</resources>

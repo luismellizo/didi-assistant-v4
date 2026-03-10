@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hack_black">#0A0A0A</color>
+    <color name="hack_green">#00FF41</color>
+    <color name="hack_green_dark">#003B00</color>
+    <color name="hack_gray">#1A1A1A</color>
+    <color name="hack_text">#E0E0E0</color>
+    
+    <color name="colorPrimary">#00FF41</color>
+    <color name="colorPrimaryDark">#0A0A0A</color>
+    <color name="colorAccent">#00FF41</color>
+
+    <!-- Launcher Colors -->
+    <color name="ic_launcher_background">#0A0A0A</color>
+    <color name="ic_launcher_foreground">#00FF41</color>
+</resources>

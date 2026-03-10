@@ -1,0 +1,40 @@
+# ============================================
+# DiDi Assistant - .gitignore Optimizado
+# ============================================
+
+# --- Build Outputs ---
+/build/
+/app/build/
+*.apk
+*.aab
+*.dex
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# --- Gradle ---
+.gradle/
+gradle-*.zip*
+!gradle/wrapper/
+
+# --- JDK & SDK (NO subir binarios externos) ---
+local_jdk/
+android_sdk/
+local.properties
+
+# --- IDE ---
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# --- Android Specifics ---
+/captures
+.externalNativeBuild/
+.cxx/
+output-metadata.json
+
+# --- Misc ---
+window_dump.xml
+*.hprof
+*.log
